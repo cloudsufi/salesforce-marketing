@@ -16,53 +16,53 @@
 @SFMCSink
 @Smoke
 @Regression
-Feature: Salesforce Marketing Cloud Sink - Design time validation scenarios
+Feature: Salesforce Marketing Cloud Sink - Design time scenarios (macros)
 
-  @BATCH-TS-SFMC-DSGN-ERROR-01
-  Scenario: Verify required fields missing validation for properties
-    When Open Datafusion Project to configure pipeline
-    And Select data pipeline type as: "Batch"
-    And Select Sink plugin: "SalesforceDataExtension" from the plugins list
-    And Navigate to the properties page of plugin: "Salesforce Marketing"
-    And Enter input plugin property: "dataExtension" with value: "Key121"
-    And Click on the Validate button
-    Then Verify mandatory property error for below listed properties:
-      | referenceName |
-      | clientId      |
-      | clientSecret  |
-      | authEndpoint  |
-      | soapEndpoint  |
-
-  @BATCH-TS-SFMC-DSGN-ERROR-02
-  Scenario: Verify validation message when user provides invalid Authentication Properties
+  @BATCH-TS-SFMC-DSGN-MACRO-01
+  Scenario:Verify user should be able to validate the plugin when Authentication properties are configured with macros
     When Open Datafusion Project to configure pipeline
     And Select data pipeline type as: "Batch"
     And Select Sink plugin: "SalesforceDataExtension" from the plugins list
     And Navigate to the properties page of plugin: "Salesforce Marketing"
     And Enter input plugin property: "referenceName" with value: "Referencename"
     And Enter input plugin property: "dataExtension" with value: "Key121"
-    And Enter input plugin property: "clientId" with value: "admin.clientid" for Credentials and Authorization related fields
-    And Enter input plugin property: "clientSecret" with value: "admin.cliensecret" for Credentials and Authorization related fields
-    And Enter input plugin property: "authEndpoint" with value: "admin.base.uri" for Credentials and Authorization related fields
-    And Enter input plugin property: "soapEndpoint" with value: "admin.soap.endpoint" for Credentials and Authorization related fields
-    And Click on the Validate button
-    Then Verify invalid credentials validation message for below listed properties:
-      | clientId     |
-      | clientSecret |
-      | authEndpoint |
-      | soapEndpoint |
+    And Click on the Macro button of Property: "clientId" and set the value to: "clientId"
+    And Click on the Macro button of Property: "clientSecret" and set the value to: "clientSecret"
+    And Click on the Macro button of Property: "authEndpoint" and set the value to: "authEndpoint"
+    And Click on the Macro button of Property: "soapEndpoint" and set the value to: "soapEndpoint"
+    Then Validate "Salesforce Marketing" plugin properties
 
-  @BATCH-TS-SFMC-DSGN-ERROR-03
-  Scenario: Verify required fields missing validation for Data Extension External Key property
+  @BATCH-TS-SFMC-DSGN-MACRO-02
+  Scenario:Verify user should be able to validate the plugin when Basic properties are configured with macros
     When Open Datafusion Project to configure pipeline
     And Select data pipeline type as: "Batch"
     And Select Sink plugin: "SalesforceDataExtension" from the plugins list
     And Navigate to the properties page of plugin: "Salesforce Marketing"
     And Enter input plugin property: "referenceName" with value: "Referencename"
+    And Click on the Macro button of Property: "dataExtension" and set the value to: "dataExtension"
+    And Click on the Macro button of Property: "operation" and set the value to: "operation"
     And Enter input plugin property: "clientId" with value: "admin.clientid" for Credentials and Authorization related fields
     And Enter input plugin property: "clientSecret" with value: "admin.cliensecret" for Credentials and Authorization related fields
     And Enter input plugin property: "authEndpoint" with value: "admin.base.uri" for Credentials and Authorization related fields
     And Enter input plugin property: "soapEndpoint" with value: "admin.soap.endpoint" for Credentials and Authorization related fields
-    And Click on the Validate button
-    Then Verify mandatory property error for below listed properties:
-      | dataExtension |
+    Then Validate "Salesforce Marketing" plugin properties
+
+  @BATCH-TS-SFMC-DSGN-MACRO-03
+  Scenario:Verify user should be able to validate the plugin when Advanced properties are configured with macros
+    When Open Datafusion Project to configure pipeline
+    And Select data pipeline type as: "Batch"
+    And Select Sink plugin: "SalesforceDataExtension" from the plugins list
+    And Navigate to the properties page of plugin: "Salesforce Marketing"
+    And Enter input plugin property: "referenceName" with value: "Referencename"
+    And Enter input plugin property: "dataExtension" with value: "Key121"
+    And Select radio button plugin property: "operation" with value: "UPDATE"
+    And Enter input plugin property: "clientId" with value: "admin.clientid" for Credentials and Authorization related fields
+    And Enter input plugin property: "clientSecret" with value: "admin.cliensecret" for Credentials and Authorization related fields
+    And Enter input plugin property: "authEndpoint" with value: "admin.base.uri" for Credentials and Authorization related fields
+    And Enter input plugin property: "soapEndpoint" with value: "admin.soap.endpoint" for Credentials and Authorization related fields
+    And Click on the Macro button of Property: "truncateText" and set the value to: "truncateText"
+    And Click on the Macro button of Property: "failOnError" and set the value to: "failOnError"
+    And Click on the Macro button of Property: "replaceWithSpaces" and set the value to: "replaceWithSpaces"
+    And Click on the Macro button of Property: "maxBatchSize" and set the value to: "maxBatchSize"
+    And Click on the Macro button of Property: "columnMapping" and set the value to: "columnMapping"
+    Then Validate "Salesforce Marketing" plugin properties
