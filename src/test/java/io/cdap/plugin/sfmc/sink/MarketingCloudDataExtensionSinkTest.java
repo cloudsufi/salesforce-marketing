@@ -24,6 +24,8 @@ import io.cdap.cdap.etl.api.validation.ValidationException;
 import io.cdap.cdap.etl.mock.common.MockArguments;
 import io.cdap.cdap.etl.mock.common.MockPipelineConfigurer;
 import io.cdap.cdap.etl.mock.validation.MockFailureCollector;
+import io.cdap.plugin.sfmc.common.SalesforceMarketingCloudBaseConfig;
+import io.cdap.plugin.sfmc.connector.MarketingConnectorConfig;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -34,6 +36,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -123,7 +126,8 @@ public class MarketingCloudDataExtensionSinkTest {
       Assert.fail("Exception is thrown for empty client_id");
     } catch (ValidationException e) {
       Assert.assertEquals(1, e.getFailures().size());
-      Assert.assertEquals("Errors were encountered during validation.", e.getMessage());
+      Assert.assertEquals("Errors were encountered during validation. Error while validating Marketing " +
+                            "Cloud client: authEndPoint/v2/token: bad URL", e.getMessage());
     }
   }
 
@@ -143,10 +147,10 @@ public class MarketingCloudDataExtensionSinkTest {
   public void testGetOutputFormatConfiguration() {
     OutputFormatProvider outputFormatProvider = Mockito.mock(OutputFormatProvider.class);
     Map<String, String> outputConfig = new HashMap<>();
-    outputConfig.put(DataExtensionOutputFormat.CLIENT_ID, marketingCloudConf.getClientId());
-    outputConfig.put(DataExtensionOutputFormat.CLIENT_SECRET, marketingCloudConf.getClientSecret());
-    outputConfig.put(DataExtensionOutputFormat.AUTH_ENDPOINT, marketingCloudConf.getAuthEndpoint());
-    outputConfig.put(DataExtensionOutputFormat.SOAP_ENDPOINT, marketingCloudConf.getSoapEndpoint());
+    outputConfig.put(DataExtensionOutputFormat.CLIENT_ID, marketingCloudConf.getConnection().getClientId());
+    outputConfig.put(DataExtensionOutputFormat.CLIENT_SECRET, marketingCloudConf.getConnection().getClientSecret());
+    outputConfig.put(DataExtensionOutputFormat.AUTH_ENDPOINT, marketingCloudConf.getConnection().getAuthEndpoint());
+    outputConfig.put(DataExtensionOutputFormat.SOAP_ENDPOINT, marketingCloudConf.getConnection().getSoapEndpoint());
     outputConfig.put(DataExtensionOutputFormat.MAX_BATCH_SIZE, String.valueOf(marketingCloudConf.getMaxBatchSize()));
     outputConfig.put(DataExtensionOutputFormat.FAIL_ON_ERROR, String.valueOf(marketingCloudConf.shouldFailOnError()));
     outputConfig.put(DataExtensionOutputFormat.OPERATION, marketingCloudConf.getOperation().name());

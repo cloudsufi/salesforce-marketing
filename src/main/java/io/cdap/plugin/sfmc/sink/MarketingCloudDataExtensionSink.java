@@ -37,6 +37,7 @@ import io.cdap.cdap.etl.api.lineage.field.FieldOperation;
 import io.cdap.cdap.etl.api.lineage.field.FieldTransformOperation;
 import io.cdap.cdap.etl.api.lineage.field.FieldWriteOperation;
 import io.cdap.plugin.common.LineageRecorder;
+import io.cdap.plugin.sfmc.connector.MarketingConnectorConfig;
 import org.apache.hadoop.io.NullWritable;
 
 import java.util.ArrayList;
@@ -122,10 +123,10 @@ public class MarketingCloudDataExtensionSink extends BatchSink<StructuredRecord,
       @Override
       public Map<String, String> getOutputFormatConfiguration() {
         Map<String, String> outputConfig = new HashMap<>();
-        outputConfig.put(DataExtensionOutputFormat.CLIENT_ID, conf.getClientId());
-        outputConfig.put(DataExtensionOutputFormat.CLIENT_SECRET, conf.getClientSecret());
-        outputConfig.put(DataExtensionOutputFormat.AUTH_ENDPOINT, conf.getAuthEndpoint());
-        outputConfig.put(DataExtensionOutputFormat.SOAP_ENDPOINT, conf.getSoapEndpoint());
+        outputConfig.put(DataExtensionOutputFormat.CLIENT_ID, conf.getConnection().getClientId());
+        outputConfig.put(DataExtensionOutputFormat.CLIENT_SECRET, conf.getConnection().getClientSecret());
+        outputConfig.put(DataExtensionOutputFormat.AUTH_ENDPOINT, conf.getConnection().getAuthEndpoint());
+        outputConfig.put(DataExtensionOutputFormat.SOAP_ENDPOINT, conf.getConnection().getSoapEndpoint());
         outputConfig.put(DataExtensionOutputFormat.MAX_BATCH_SIZE, String.valueOf(conf.getMaxBatchSize()));
         outputConfig.put(DataExtensionOutputFormat.FAIL_ON_ERROR, String.valueOf(conf.shouldFailOnError()));
         outputConfig.put(DataExtensionOutputFormat.OPERATION, conf.getOperation().name());
