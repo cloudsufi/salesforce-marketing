@@ -29,10 +29,6 @@ import io.cdap.cdap.etl.api.connector.ConnectorSpec;
 import io.cdap.cdap.etl.api.connector.ConnectorSpecRequest;
 import io.cdap.cdap.etl.api.validation.ValidationException;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Salesforce Marketing Cloud Connector

@@ -22,14 +22,8 @@ import io.cdap.cdap.api.annotation.Description;
 import io.cdap.cdap.api.annotation.Macro;
 import io.cdap.cdap.api.annotation.Name;
 import io.cdap.cdap.api.data.schema.Schema;
-import io.cdap.cdap.api.plugin.PluginConfig;
 import io.cdap.cdap.etl.api.FailureCollector;
-import io.cdap.plugin.common.ConfigUtil;
 import io.cdap.plugin.sfmc.common.SalesforceMarketingCloudBaseConfig;
-import io.cdap.plugin.sfmc.connector.MarketingConnectorConfig;
-import io.cdap.plugin.sfmc.source.MarketingCloudClient;
-import io.cdap.plugin.sfmc.source.util.MarketingCloudConstants;
-import scala.reflect.internal.Trees;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -111,10 +105,6 @@ public class MarketingCloudConf extends SalesforceMarketingCloudBaseConfig {
     this.replaceWithSpaces = replaceWithSpaces;
     this.truncateText = truncateText;
     this.dataExtension = dataExtension;
-  }
-
-  String getReferenceName() {
-    return referenceName;
   }
 
   String getDataExtension() {

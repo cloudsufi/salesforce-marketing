@@ -132,10 +132,6 @@ public class MarketingCloudSourceConfig extends SalesforceMarketingCloudBaseConf
 
   }
 
-  public String getReferenceName() {
-    return referenceName;
-  }
-
   /**
    * Returns the query mode chosen.
    *

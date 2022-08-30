@@ -24,8 +24,6 @@ import io.cdap.cdap.etl.api.validation.ValidationException;
 import io.cdap.cdap.etl.mock.common.MockArguments;
 import io.cdap.cdap.etl.mock.common.MockPipelineConfigurer;
 import io.cdap.cdap.etl.mock.validation.MockFailureCollector;
-import io.cdap.plugin.sfmc.common.SalesforceMarketingCloudBaseConfig;
-import io.cdap.plugin.sfmc.connector.MarketingConnectorConfig;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;

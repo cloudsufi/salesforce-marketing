@@ -37,7 +37,6 @@ import io.cdap.cdap.etl.api.lineage.field.FieldOperation;
 import io.cdap.cdap.etl.api.lineage.field.FieldTransformOperation;
 import io.cdap.cdap.etl.api.lineage.field.FieldWriteOperation;
 import io.cdap.plugin.common.LineageRecorder;
-import io.cdap.plugin.sfmc.connector.MarketingConnectorConfig;
 import org.apache.hadoop.io.NullWritable;
 
 import java.util.ArrayList;

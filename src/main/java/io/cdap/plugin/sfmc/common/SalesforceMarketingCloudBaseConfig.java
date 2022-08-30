@@ -50,4 +50,8 @@ public class SalesforceMarketingCloudBaseConfig extends ReferencePluginConfig {
   public MarketingConnectorConfig getConnection() {
     return connection;
   }
+
+  public String getReferenceName() {
+    return referenceName;
+  }
 }
