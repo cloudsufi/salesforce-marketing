@@ -60,4 +60,5 @@ public class SfmcSourcePropertiesPageActions {
   public static void fillDataExtensionExternalKey(String key) {
     ElementHelper.sendKeys(SfmcSourcePropertiesPage.dataExtensionExternalKeyInputForMultiObjectMode, key);
   }
+  //
 }
