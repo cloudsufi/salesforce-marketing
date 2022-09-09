@@ -81,6 +81,9 @@ Feature: Salesforce Marketing Cloud Source - Run time Scenarios
     Examples:
       | ObjectName   |
       | BOUNCE_EVENT |
+    And Verify count of no of records transferred to the target BigQuery Table
+    Then Verify If new record created in Sink application for sfmc object "open event" is correct
+
 
   @BATCH-TS-SFMC-RNTM-03 @BQ_SINK_TEST
   Scenario: Verify user should be able to preview the pipeline when plugin is configured for Object List in Multi Object Data Retrieval mode

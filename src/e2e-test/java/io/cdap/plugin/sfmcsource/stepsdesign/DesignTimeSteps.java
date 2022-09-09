@@ -17,11 +17,14 @@
 package io.cdap.plugin.sfmcsource.stepsdesign;
 
 import io.cdap.e2e.utils.CdfHelper;
+import io.cdap.e2e.utils.PluginPropertyUtils;
 import io.cdap.plugin.sfmcsource.actions.SfmcSourcePropertiesPageActions;
 import io.cdap.plugin.utils.enums.Sobjects;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,4 +54,11 @@ public class DesignTimeSteps implements CdfHelper {
   public void enterInputPluginPropertyDataExtensionExternalKey(String key) {
     SfmcSourcePropertiesPageActions.fillDataExtensionExternalKey(key);
   }
+
+    @Then("Verify If new record created in Sink application for sfmc object {string} is correct")
+    public void verifyIfNewRecordCreatedInSinkApplicationForSfmcObjectIsCorrect(String objectname)
+    throws IOException, InterruptedException {
+    String sfmcRecordJsonArray = PluginPropertyUtils.pluginProp(objectname);
+    SfmcSourcePropertiesPageActions.verifyIfRecordCreatedInSinkIsCorrect(sfmcRecordJsonArray);
+    }
 }
