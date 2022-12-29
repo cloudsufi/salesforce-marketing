@@ -21,7 +21,7 @@
   <name>Salesforce Marketing plugins</name>
   <groupId>io.cdap.plugin</groupId>
   <artifactId>salesforce-marketing-plugins</artifactId>
-  <version>1.2.2-SNAPSHOT</version>
+  <version>1.2.3-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>Salesforce Marketing Plugins</description>
   <url>https://github.com/data-integrations/salesforce-marketing</url>
@@ -283,6 +283,7 @@
       <version>${slf4j.version}</version>
     </dependency>
     <!-- tests -->
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -683,7 +684,7 @@
         <dependency>
           <groupId>io.cdap.tests.e2e</groupId>
           <artifactId>cdap-e2e-framework</artifactId>
-          <version>0.1.0-SNAPSHOT</version>
+          <version>0.2.0-SNAPSHOT</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
