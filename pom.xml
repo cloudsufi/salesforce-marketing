@@ -21,7 +21,7 @@
   <name>Salesforce Marketing plugins</name>
   <groupId>io.cdap.plugin</groupId>
   <artifactId>salesforce-marketing-plugins</artifactId>
-  <version>1.2.3-SNAPSHOT</version>
+  <version>1.2.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>Salesforce Marketing Plugins</description>
   <url>https://github.com/data-integrations/salesforce-marketing</url>
@@ -56,7 +56,7 @@
     <surefire.redirectTestOutputToFile>true</surefire.redirectTestOutputToFile>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- version properties -->
-    <cdap.version>6.8.0</cdap.version>
+    <cdap.version>6.8.0-SNAPSHOT</cdap.version>
     <junit.version>4.12</junit.version>
     <hadoop.version>2.10.2</hadoop.version>
     <hydrator.version>2.10.0</hydrator.version>
@@ -296,12 +296,12 @@
       <version>2.24.0</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>org.powermock</groupId>
-          <artifactId>powermock-module-junit4</artifactId>
-          <version>2.0.2</version>
-          <scope>test</scope>
-      </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>2.0.2</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito2</artifactId>
@@ -610,23 +610,23 @@
               <includes>
                 <include>TestRunner.java</include>
               </includes>
-                <environmentVariables>
-                  <SALESFORCE_MARKETING_CLIENT_ID>
-                    ${SALESFORCE_MARKETING_CLIENT_ID}
-                  </SALESFORCE_MARKETING_CLIENT_ID>
-                  <SALESFORCE_MARKETING_CLIENT_SECRET>
-                    ${SALESFORCE_MARKETING_CLIENT_SECRET}
-                  </SALESFORCE_MARKETING_CLIENT_SECRET>
-                  <SALESFORCE_MARKETING_BASEURI>
-                    ${SALESFORCE_MARKETING_BASEURI}
-                  </SALESFORCE_MARKETING_BASEURI>
-                  <SALESFORCE_MARKETING_SOAP_API_ENDPOINT>
-                    ${SALESFORCE_MARKETING_SOAP_API_ENDPOINT}
-                  </SALESFORCE_MARKETING_SOAP_API_ENDPOINT>
-                  <SALESFORCE_MARKETING_REST_API_ENDPOINT>
-                    ${SALESFORCE_MARKETING_REST_API_ENDPOINT}
-                  </SALESFORCE_MARKETING_REST_API_ENDPOINT>
-                </environmentVariables>
+              <environmentVariables>
+                <SALESFORCE_MARKETING_CLIENT_ID>
+                  ${SALESFORCE_MARKETING_CLIENT_ID}
+                </SALESFORCE_MARKETING_CLIENT_ID>
+                <SALESFORCE_MARKETING_CLIENT_SECRET>
+                  ${SALESFORCE_MARKETING_CLIENT_SECRET}
+                </SALESFORCE_MARKETING_CLIENT_SECRET>
+                <SALESFORCE_MARKETING_BASEURI>
+                  ${SALESFORCE_MARKETING_BASEURI}
+                </SALESFORCE_MARKETING_BASEURI>
+                <SALESFORCE_MARKETING_SOAP_API_ENDPOINT>
+                  ${SALESFORCE_MARKETING_SOAP_API_ENDPOINT}
+                </SALESFORCE_MARKETING_SOAP_API_ENDPOINT>
+                <SALESFORCE_MARKETING_REST_API_ENDPOINT>
+                  ${SALESFORCE_MARKETING_REST_API_ENDPOINT}
+                </SALESFORCE_MARKETING_REST_API_ENDPOINT>
+              </environmentVariables>
             </configuration>
             <executions>
               <execution>

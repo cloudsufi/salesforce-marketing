@@ -22,6 +22,7 @@ import com.exacttarget.fuelsdk.ETSoapObject;
 import io.cdap.cdap.api.data.format.StructuredRecord;
 import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudConstants;
+import io.cdap.plugin.sfmc.source.util.MarketingCloudConversion;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudObjectInfo;
 import io.cdap.plugin.sfmc.source.util.SourceObject;
 import io.cdap.plugin.sfmc.source.util.SourceQueryMode;
@@ -101,12 +102,13 @@ public class MarketingCloudRecordReader extends RecordReader<NullWritable, Struc
 
   @Override
   public StructuredRecord getCurrentValue() throws IOException {
+    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
     StructuredRecord.Builder recordBuilder = StructuredRecord.builder(schema);
     if (pluginConf.getQueryMode() == SourceQueryMode.MULTI_OBJECT) {
       recordBuilder.set(tableNameField, formattedTableName);
     }
     try {
-      pluginConf.getConnection().convertRecord(sfObjectMetaData, recordBuilder, row);
+      cloudConversion.convertRecord(sfObjectMetaData, recordBuilder, row);
     } catch (Exception e) {
       LOG.error(String.format("Error decoding row from table %s", tableName), e);
       throw new IOException(String.format("Error decoding row from table %s", tableName), e);

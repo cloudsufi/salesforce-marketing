@@ -16,19 +16,30 @@
 package io.cdap.plugin.sfmc.connector;
 
 import com.custom.fuelsdk.ETClickEvent;
-import com.exacttarget.fuelsdk.*;
+import com.exacttarget.fuelsdk.ETApiObject;
+import com.exacttarget.fuelsdk.ETDataExtensionRow;
+import com.exacttarget.fuelsdk.ETResponse;
+import com.exacttarget.fuelsdk.ETSdkException;
+import com.exacttarget.fuelsdk.ETSoapObject;
 import com.exacttarget.fuelsdk.internal.EventType;
 import io.cdap.cdap.api.data.format.StructuredRecord;
 import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.etl.api.batch.BatchSource;
-import io.cdap.cdap.etl.api.connector.*;
+import io.cdap.cdap.etl.api.connector.BrowseRequest;
+import io.cdap.cdap.etl.api.connector.ConnectorContext;
+import io.cdap.cdap.etl.api.connector.ConnectorSpec;
+import io.cdap.cdap.etl.api.connector.ConnectorSpecRequest;
+import io.cdap.cdap.etl.api.connector.PluginSpec;
+import io.cdap.cdap.etl.api.connector.SampleRequest;
 import io.cdap.cdap.etl.mock.common.MockConnectorConfigurer;
 import io.cdap.cdap.etl.mock.common.MockConnectorContext;
 import io.cdap.cdap.etl.mock.validation.MockFailureCollector;
 import io.cdap.plugin.common.ConfigUtil;
-import io.cdap.plugin.sfmc.source.*;
+import io.cdap.plugin.sfmc.source.MarketingCloudClient;
+import io.cdap.plugin.sfmc.source.MarketingCloudInputFormat;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudColumn;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudConstants;
+import io.cdap.plugin.sfmc.source.util.MarketingCloudConversion;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudObjectInfo;
 import io.cdap.plugin.sfmc.source.util.SourceObject;
 import org.junit.Assert;
@@ -42,7 +53,12 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MarketingCloudClient.class, MarketingCloudInputFormat.class, StructuredRecord.class,
@@ -74,7 +90,8 @@ public class MarketingConnectorTest {
     connector.test(context);
     connector.browse(context, browseRequest);
     PowerMockito.when(marketingConnectorConfig.getSchema(SourceObject.MAILING_LIST)).thenReturn(getPluginSchema());
-    ConnectorSpec connectorSpec = marketingConnector.generateSpec(new MockConnectorContext(new MockConnectorConfigurer()),
+    ConnectorSpec connectorSpec = marketingConnector.generateSpec
+            (new MockConnectorContext(new MockConnectorConfigurer()),
             ConnectorSpecRequest.builder().setPath("MAILING_LIST").setConnection("${conn(connection-id)}").build());
     Set<PluginSpec> relatedPlugins = connectorSpec.getRelatedPlugins();
     Assert.assertEquals(2, relatedPlugins.size());
@@ -100,8 +117,7 @@ public class MarketingConnectorTest {
 
   @Test
   public void testConvertRecord() throws ETSdkException, NoSuchFieldException {
-    MarketingConnectorConfig marketingConnectorConfig1 = new MarketingConnectorConfig
-            ("clientId", "clientSecret", "authEndpoint", "soapEndpoint");
+    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
     MarketingCloudClient cloudClient = Mockito.mock(MarketingCloudClient.class);
     PowerMockito.mockStatic(MarketingCloudClient.class);
     StructuredRecord.Builder builder1 = Mockito.mock(StructuredRecord.Builder.class);
@@ -116,13 +132,12 @@ public class MarketingConnectorTest {
     Mockito.when(MarketingCloudClient.create("clientId", "clientSecret", "authEndpoint",
             "soapEndpoint")).thenReturn(cloudClient);
     Mockito.when(cloudClient.fetchObjectSchema(SourceObject.MAILING_LIST)).thenReturn(cloudObjectInfo);
-    marketingConnectorConfig1.convertRecord(cloudObjectInfo, builder1, object);
+    cloudConversion.convertRecord(cloudObjectInfo, builder1, object);
   }
 
   @Test
   public void testConvertToValueWRecord() {
-    MarketingConnectorConfig marketingConnectorConfig1 = new MarketingConnectorConfig("clientId",
-            "clientSecret", "authEndPoint", "soapEndPoint");
+    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
     Schema fieldSchema = Schema.recordOf("record",
             Schema.Field.of("store_id", Schema.of(Schema.Type.DOUBLE)),
             Schema.Field.of("markedPrice", Schema.nullableOf(Schema.decimalOf
@@ -134,7 +149,7 @@ public class MarketingConnectorTest {
             Schema.Field.of("bytes", Schema.of(Schema.LogicalType.TIMESTAMP_MICROS)),
             Schema.Field.of("emailid", Schema.of(Schema.Type.DOUBLE)));
     thrown.expect(IllegalStateException.class);
-    Assert.assertNotNull(marketingConnectorConfig1.convertToValue("store_id", fieldSchema, new HashMap<>
+    Assert.assertNotNull(cloudConversion.convertToValue("store_id", fieldSchema, new HashMap<>
             (1)));
   }
   @Test
@@ -206,35 +221,31 @@ public class MarketingConnectorTest {
 
   @Test
   public void testConvertToStringValue() {
-    MarketingConnectorConfig marketingConnectorConfig1 = new MarketingConnectorConfig("clientId",
-            " clientSecret", "authEndPoint", "soapEndPoint");
-    Assert.assertEquals("Field Value", marketingConnectorConfig1.convertToStringValue("Field Value"));
+    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
+    Assert.assertEquals("Field Value", cloudConversion.convertToStringValue("Field Value"));
   }
 
   @Test
   public void testConvertToDoubleValue() {
-    MarketingConnectorConfig marketingConnectorConfig1 = new MarketingConnectorConfig("clientId",
-            " clientSecret", "authEndPoint", "soapEndPoint");
-    Assert.assertEquals(42.0, marketingConnectorConfig1.convertToDoubleValue("42").doubleValue(), 0.0);
-    Assert.assertEquals(42.0, marketingConnectorConfig1.convertToDoubleValue(42).doubleValue(), 0.0);
-    Assert.assertNull(marketingConnectorConfig1.convertToDoubleValue(""));
+    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
+    Assert.assertEquals(42.0, cloudConversion.convertToDoubleValue("42").doubleValue(), 0.0);
+    Assert.assertEquals(42.0, cloudConversion.convertToDoubleValue(42).doubleValue(), 0.0);
+    Assert.assertNull(cloudConversion.convertToDoubleValue(""));
   }
 
   @Test
   public void testConvertToIntegerValue() {
-    MarketingConnectorConfig marketingConnectorConfig1 = new MarketingConnectorConfig("clientId",
-            " clientSecret", "authEndPoint", "soapEndPoint");
-    Assert.assertEquals(42, marketingConnectorConfig1.convertToIntegerValue("42").intValue());
-    Assert.assertEquals(42, marketingConnectorConfig1.convertToIntegerValue(42).intValue());
-    Assert.assertNull(marketingConnectorConfig1.convertToIntegerValue(""));
+    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
+    Assert.assertEquals(42, cloudConversion.convertToIntegerValue("42").intValue());
+    Assert.assertEquals(42, cloudConversion.convertToIntegerValue(42).intValue());
+    Assert.assertNull(cloudConversion.convertToIntegerValue(""));
   }
 
   @Test
   public void testConvertToBooleanValue() {
-    MarketingConnectorConfig marketingConnectorConfig1 = new MarketingConnectorConfig("clientId",
-            " clientSecret", "authEndPoint", "soapEndPoint");
-    Assert.assertFalse(marketingConnectorConfig1.convertToBooleanValue("Field Value"));
-    Assert.assertFalse(marketingConnectorConfig1.convertToBooleanValue(42));
-    Assert.assertNull(marketingConnectorConfig1.convertToBooleanValue(""));
+    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
+    Assert.assertFalse(cloudConversion.convertToBooleanValue("Field Value"));
+    Assert.assertFalse(cloudConversion.convertToBooleanValue(42));
+    Assert.assertNull(cloudConversion.convertToBooleanValue(""));
   }
 }

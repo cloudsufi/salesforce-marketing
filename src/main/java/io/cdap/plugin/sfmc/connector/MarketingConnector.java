@@ -45,6 +45,7 @@ import io.cdap.plugin.common.ReferenceNames;
 import io.cdap.plugin.sfmc.sink.MarketingCloudDataExtensionSink;
 import io.cdap.plugin.sfmc.source.MarketingCloudClient;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudConstants;
+import io.cdap.plugin.sfmc.source.util.MarketingCloudConversion;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudObjectInfo;
 import io.cdap.plugin.sfmc.source.util.SourceObject;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class MarketingConnector implements DirectConnector {
   public ETApiObject row;
   private Iterator<? extends ETApiObject> iterator;
 
-  MarketingConnector (MarketingConnectorConfig config){
+  MarketingConnector (MarketingConnectorConfig config) {
   this.config = config;
   }
 
@@ -130,6 +131,7 @@ public class MarketingConnector implements DirectConnector {
   private List<StructuredRecord> listObjectDetails (SourceObject sourceObject) throws ETSdkException
           , IOException {
   List<StructuredRecord> sampleList = new ArrayList<>();
+  MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
   MarketingCloudClient marketingCloudClient = MarketingCloudClient.create
           (config.getClientId(), config.getClientSecret(), config.getAuthEndpoint(), config.getSoapEndpoint());
   //  returning Collections.emptyList for DATA_EXTENSION Source Object because it has no record. So, user will see
@@ -143,7 +145,7 @@ public class MarketingConnector implements DirectConnector {
       while (iterator.hasNext()) {
           StructuredRecord.Builder builder = StructuredRecord.builder(schema);
           row = iterator.next();
-          config.convertRecord(sfObjectMetaData, builder, row);
+          cloudConversion.convertRecord(sfObjectMetaData, builder, row);
           sampleList.add(builder.build());
       }
   }
