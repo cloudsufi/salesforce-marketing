@@ -134,8 +134,8 @@ public class MarketingConnector implements DirectConnector {
   MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
   MarketingCloudClient marketingCloudClient = MarketingCloudClient.create
           (config.getClientId(), config.getClientSecret(), config.getAuthEndpoint(), config.getSoapEndpoint());
-  //  returning Collections.emptyList for DATA_EXTENSION Source Object because it has no record. So, user will see
-  //  no record after selecting this object instead of buffering
+  //  returning Collections.emptyList for DATA_EXTENSION Source Object because we need to provide requestId which
+  //  is dynamic. However, provided requestId null.
   if (SourceObject.DATA_EXTENSION == sourceObject) {
       return Collections.emptyList();
   } else {
