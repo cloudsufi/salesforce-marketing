@@ -37,10 +37,9 @@ import io.cdap.cdap.etl.mock.validation.MockFailureCollector;
 import io.cdap.plugin.common.ConfigUtil;
 import io.cdap.plugin.sfmc.source.MarketingCloudClient;
 import io.cdap.plugin.sfmc.source.MarketingCloudInputFormat;
-import io.cdap.plugin.sfmc.source.util.MarketingCloudColumn;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudConstants;
-import io.cdap.plugin.sfmc.source.util.MarketingCloudConversion;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudObjectInfo;
+import io.cdap.plugin.sfmc.source.util.MarketingCloudUtil;
 import io.cdap.plugin.sfmc.source.util.SourceObject;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -116,28 +115,8 @@ public class MarketingConnectorTest {
   }
 
   @Test
-  public void testConvertRecord() throws ETSdkException, NoSuchFieldException {
-    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
-    MarketingCloudClient cloudClient = Mockito.mock(MarketingCloudClient.class);
-    PowerMockito.mockStatic(MarketingCloudClient.class);
-    StructuredRecord.Builder builder1 = Mockito.mock(StructuredRecord.Builder.class);
-    ETApiObject object = Mockito.spy(ETApiObject.class);
-    ETApiObject row = new ETDataExtensionRow();
-    row.setId("id");
-    List<MarketingCloudColumn> columns = new ArrayList<>();
-    MarketingCloudColumn column = new MarketingCloudColumn("price", "String");
-    columns.add(column);
-    MarketingCloudObjectInfo cloudObjectInfo = Mockito.spy(new MarketingCloudObjectInfo(SourceObject.DATA_EXTENSION,
-            columns));
-    Mockito.when(MarketingCloudClient.create("clientId", "clientSecret", "authEndpoint",
-            "soapEndpoint")).thenReturn(cloudClient);
-    Mockito.when(cloudClient.fetchObjectSchema(SourceObject.MAILING_LIST)).thenReturn(cloudObjectInfo);
-    cloudConversion.convertRecord(cloudObjectInfo, builder1, object);
-  }
-
-  @Test
   public void testConvertToValueWRecord() {
-    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
+    MarketingCloudUtil cloudConversion = new MarketingCloudUtil();
     Schema fieldSchema = Schema.recordOf("record",
             Schema.Field.of("store_id", Schema.of(Schema.Type.DOUBLE)),
             Schema.Field.of("markedPrice", Schema.nullableOf(Schema.decimalOf
@@ -152,6 +131,7 @@ public class MarketingConnectorTest {
     Assert.assertNotNull(cloudConversion.convertToValue("store_id", fieldSchema, new HashMap<>
             (1)));
   }
+
   @Test
   public void testSample() throws IOException, ETSdkException, NoSuchFieldException {
     MarketingConnectorConfig connectorConfig = new MarketingConnectorConfig("clientId",
@@ -221,31 +201,31 @@ public class MarketingConnectorTest {
 
   @Test
   public void testConvertToStringValue() {
-    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
-    Assert.assertEquals("Field Value", cloudConversion.convertToStringValue("Field Value"));
+    MarketingCloudUtil cloudUtil = new MarketingCloudUtil();
+    Assert.assertEquals("Field Value", cloudUtil.convertToStringValue("Field Value"));
   }
 
   @Test
   public void testConvertToDoubleValue() {
-    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
-    Assert.assertEquals(42.0, cloudConversion.convertToDoubleValue("42").doubleValue(), 0.0);
-    Assert.assertEquals(42.0, cloudConversion.convertToDoubleValue(42).doubleValue(), 0.0);
-    Assert.assertNull(cloudConversion.convertToDoubleValue(""));
+    MarketingCloudUtil cloudUtil = new MarketingCloudUtil();
+    Assert.assertEquals(42.0, cloudUtil.convertToDoubleValue("42").doubleValue(), 0.0);
+    Assert.assertEquals(42.0, cloudUtil.convertToDoubleValue(42).doubleValue(), 0.0);
+    Assert.assertNull(cloudUtil.convertToDoubleValue(""));
   }
 
   @Test
   public void testConvertToIntegerValue() {
-    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
-    Assert.assertEquals(42, cloudConversion.convertToIntegerValue("42").intValue());
-    Assert.assertEquals(42, cloudConversion.convertToIntegerValue(42).intValue());
-    Assert.assertNull(cloudConversion.convertToIntegerValue(""));
+    MarketingCloudUtil cloudUtil = new MarketingCloudUtil();
+    Assert.assertEquals(42, cloudUtil.convertToIntegerValue("42").intValue());
+    Assert.assertEquals(42, cloudUtil.convertToIntegerValue(42).intValue());
+    Assert.assertNull(cloudUtil.convertToIntegerValue(""));
   }
 
   @Test
   public void testConvertToBooleanValue() {
-    MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
-    Assert.assertFalse(cloudConversion.convertToBooleanValue("Field Value"));
-    Assert.assertFalse(cloudConversion.convertToBooleanValue(42));
-    Assert.assertNull(cloudConversion.convertToBooleanValue(""));
+    MarketingCloudUtil cloudUtil = new MarketingCloudUtil();
+    Assert.assertFalse(cloudUtil.convertToBooleanValue("Field Value"));
+    Assert.assertFalse(cloudUtil.convertToBooleanValue(42));
+    Assert.assertNull(cloudUtil.convertToBooleanValue(""));
   }
 }

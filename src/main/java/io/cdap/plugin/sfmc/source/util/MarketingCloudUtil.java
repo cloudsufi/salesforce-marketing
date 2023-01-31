@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Salesforce Marketing Cloud Conversion
  */
-public class MarketingCloudConversion {
+public class MarketingCloudUtil {
   private static final Logger LOG = LoggerFactory.getLogger(MarketingConnectorConfig.class);
   private Object getFieldValue(ETApiObject row, String fieldName) {
     try {
@@ -111,28 +111,28 @@ public class MarketingCloudConversion {
                             ETApiObject row) throws ETSdkException {
   List<Schema.Field> tableFields = sfObjectMetaData.getSchema().getFields();
   for (Schema.Field field : tableFields) {
-      String fieldName = field.getName();
-      Object rawFieldValue = null;
-      if (row instanceof ETDataExtensionRow) {
-          String apiFieldName = sfObjectMetaData.lookupFieldsMap(fieldName);
-          rawFieldValue = ((ETDataExtensionRow) row).getColumn(apiFieldName);
-      } else {
-          rawFieldValue = getFieldValue(row, fieldName);
-      }
-      Object fieldValue = convertToValue(fieldName, field.getSchema(), rawFieldValue);
-      recordBuilder.set(fieldName, fieldValue);
+  String fieldName = field.getName();
+  Object rawFieldValue = null;
+  if (row instanceof ETDataExtensionRow) {
+      String apiFieldName = sfObjectMetaData.lookupFieldsMap(fieldName);
+      rawFieldValue = ((ETDataExtensionRow) row).getColumn(apiFieldName);
+  } else {
+      rawFieldValue = getFieldValue(row, fieldName);
+  }
+  Object fieldValue = convertToValue(fieldName, field.getSchema(), rawFieldValue);
+  recordBuilder.set(fieldName, fieldValue);
   }
   }
   private Object transformLogicalType(String fieldName, Schema.LogicalType logicalType, Object value) {
   switch (logicalType) {
-      case TIMESTAMP_MICROS:
-          if (value instanceof Date) {
-              return TimeUnit.MILLISECONDS.toMicros((((Date) value).getTime()));
-          }
-          return null;
-      default:
-          throw new IllegalArgumentException(
-                  String.format("Field '%s' is of unsupported type '%s'", fieldName, logicalType.getToken()));
+   case TIMESTAMP_MICROS:
+   if (value instanceof Date) {
+       return TimeUnit.MILLISECONDS.toMicros((((Date) value).getTime()));
+   }
+   return null;
+   default:
+       throw new IllegalArgumentException(
+               String.format("Field '%s' is of unsupported type '%s'", fieldName, logicalType.getToken()));
   }
   }
 }

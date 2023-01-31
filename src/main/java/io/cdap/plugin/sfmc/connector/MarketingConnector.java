@@ -45,7 +45,7 @@ import io.cdap.plugin.common.ReferenceNames;
 import io.cdap.plugin.sfmc.sink.MarketingCloudDataExtensionSink;
 import io.cdap.plugin.sfmc.source.MarketingCloudClient;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudConstants;
-import io.cdap.plugin.sfmc.source.util.MarketingCloudConversion;
+import io.cdap.plugin.sfmc.source.util.MarketingCloudUtil;
 import io.cdap.plugin.sfmc.source.util.MarketingCloudObjectInfo;
 import io.cdap.plugin.sfmc.source.util.SourceObject;
 import java.io.IOException;
@@ -131,7 +131,7 @@ public class MarketingConnector implements DirectConnector {
   private List<StructuredRecord> listObjectDetails (SourceObject sourceObject) throws ETSdkException
           , IOException {
   List<StructuredRecord> sampleList = new ArrayList<>();
-  MarketingCloudConversion cloudConversion = new MarketingCloudConversion();
+  MarketingCloudUtil cloudUtil = new MarketingCloudUtil();
   MarketingCloudClient marketingCloudClient = MarketingCloudClient.create
           (config.getClientId(), config.getClientSecret(), config.getAuthEndpoint(), config.getSoapEndpoint());
   //  returning Collections.emptyList for DATA_EXTENSION Source Object because we need to provide requestId which
@@ -145,7 +145,7 @@ public class MarketingConnector implements DirectConnector {
       while (iterator.hasNext()) {
           StructuredRecord.Builder builder = StructuredRecord.builder(schema);
           row = iterator.next();
-          cloudConversion.convertRecord(sfObjectMetaData, builder, row);
+          cloudUtil.convertRecord(sfObjectMetaData, builder, row);
           sampleList.add(builder.build());
       }
   }
