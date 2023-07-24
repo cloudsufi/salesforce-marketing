@@ -18,7 +18,7 @@
 @Regression
 Feature: Salesforce Marketing Cloud Sink - Run time scenarios
 
-  @SINK-TS-SFMC-RNTM-01 @BQ_SOURCE_TABLE @BQ_SOURCE_CLEANUP
+  @SINK-TS-SFMC-RNTM-01 @BQ_SOURCE_TABLE @BQ_SOURCE_CLEANUP @Required
   Scenario:Verify user should be able to preview and deploy the pipeline when plugin is configured for Insert Operation
     When Open Datafusion Project to configure pipeline
     And Select plugin: "BigQuery" from the plugins list as: "Source"

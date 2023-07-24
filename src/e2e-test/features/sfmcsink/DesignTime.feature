@@ -18,7 +18,7 @@
 @Regression
 Feature: Salesforce Marketing Cloud Sink - Design time scenarios
 
-  @BATCH-TS-SFMC-DSGN-01
+  @BATCH-TS-SFMC-DSGN-01 @Required
   Scenario Outline: Verify user should be able to successfully validate the sink for All Operation Types
     When Open Datafusion Project to configure pipeline
     And Select Sink plugin: "SalesforceDataExtension" from the plugins list

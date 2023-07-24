@@ -18,7 +18,7 @@
 @Regression
 Feature: Salesforce Marketing Cloud Source - Run time Scenarios
 
-  @BATCH-TS-SFMC-RNTM-01 @BQ_SINK @FILE_PATH @BQ_SINK_CLEANUP
+  @BATCH-TS-SFMC-RNTM-01 @BQ_SINK @FILE_PATH @BQ_SINK_CLEANUP @Required
   Scenario Outline: Verify user should be able to preview and deploy the pipeline when plugin is configured for Object Name in Single Object Data Retrieval mode
     When Open Datafusion Project to configure pipeline
     And Select plugin: "Salesforce Marketing" from the plugins list as: "Source"

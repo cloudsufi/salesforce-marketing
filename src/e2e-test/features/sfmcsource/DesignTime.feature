@@ -18,7 +18,7 @@
 @Regression
 Feature: Salesforce Marketing Cloud Source - Design time scenarios
 
-  @BATCH-TS-SFMC-DSGN-01
+  @BATCH-TS-SFMC-DSGN-01 @Required
   Scenario Outline: Verify user should be able to get Output Schema for Single Object Data Retrieval mode
     When Open Datafusion Project to configure pipeline
     And Select plugin: "Salesforce Marketing" from the plugins list as: "Source"
