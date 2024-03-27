@@ -38,6 +38,7 @@ import com.exacttarget.fuelsdk.internal.UpdateOptions;
 import com.exacttarget.fuelsdk.internal.UpdateRequest;
 import com.exacttarget.fuelsdk.internal.UpdateResponse;
 import com.exacttarget.fuelsdk.internal.UpdateResult;
+import com.google.common.collect.ImmutableSet;
 import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.etl.api.FailureCollector;
 
@@ -45,12 +46,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Wrapper around an ETClient that understands objects at the level that the plugin cares about.
  */
 public class DataExtensionClient {
+  private static final Set<Integer> PK_ERROR_CODES = ImmutableSet.of(2, 71005);
   private final ETClient client;
   private final String dataExtensionKey;
 
@@ -205,9 +208,7 @@ public class DataExtensionClient {
 
     List<ETDataExtensionRow> toUpdate = new ArrayList<>();
     for (ETResult<ETDataExtensionRow> row : inserts.getResults()) {
-      // super hacky to check the error message... but there is no better way
-      if (row.getStatus() == ETResult.Status.ERROR && row.getErrorCode() == 2 && row.getErrorMessage() != null &&
-        row.getErrorMessage().toLowerCase().contains("primary key")) {
+      if (isPrimaryKeyError(row)) {
         ETDataExtensionRow failed = row.getObject();
         ETDataExtensionRow copy = new ETDataExtensionRow();
         copy.setDataExtensionKey(failed.getDataExtensionKey());
@@ -225,6 +226,14 @@ public class DataExtensionClient {
       result.addAll(updates.getResults());
     }
     return result;
+  }
+
+  boolean isPrimaryKeyError(ETResult<ETDataExtensionRow> row) {
+    // super hacky to check the error message... but there is no better way
+    // error code 2 and 71005 are "Primary key violation"
+    return row.getStatus() == ETResult.Status.ERROR && row.getErrorCode() != null &&
+      PK_ERROR_CODES.contains(row.getErrorCode()) && row.getErrorMessage() != null &&
+      row.getErrorMessage().toLowerCase().contains("primary key");
   }
 
   private <T> T call(SFMCCall<T> callable) throws ETSdkException {
