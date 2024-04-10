@@ -277,5 +277,18 @@ public class DataExtensionClientTest {
     DataExtensionClient dataExtensionClient = Mockito.spy(new DataExtensionClient(client, dataExtensionKey));
     Assert.assertNotNull(dataExtensionClient.upsert(row));
   }
+
+  @Test
+  public void testIsPrimaryKeyError() {
+    ETResult<ETDataExtensionRow> mockRow = Mockito.mock(ETResult.class);
+    Mockito.when(mockRow.getStatus()).thenReturn(ETResult.Status.ERROR);
+    Mockito.when(mockRow.getErrorCode()).thenReturn(71005);
+    Mockito.when(mockRow.getErrorMessage()).thenReturn("This is Primary Key Violation on colum abc");
+    ETClient client = Mockito.mock(ETClient.class);
+    String dataExtensionKey = "DE";
+    DataExtensionClient dataExtensionClient = new DataExtensionClient(client, dataExtensionKey);
+    boolean result = dataExtensionClient.isPrimaryKeyError(mockRow);
+    Assert.assertTrue(result);
+  }
 }
 

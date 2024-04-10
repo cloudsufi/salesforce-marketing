@@ -65,6 +65,7 @@ public class MarketingCloudSourceTest {
   private static final String SOAP_ENDPOINT = "soapEndPoint";
   private MarketingCloudSource marketingCloudSource;
   private MarketingCloudSourceConfig marketingCloudSourceConfig;
+  private MarketingCloudClient client;
 
   @Before
   public void initialize() throws ETSdkException {
@@ -83,6 +84,16 @@ public class MarketingCloudSourceTest {
       .setObjectList(null)
       .build();
     marketingCloudSource = new MarketingCloudSource(marketingCloudSourceConfig);
+    client = PowerMockito.mock(MarketingCloudClient.class);
+    ETResponse<ETDataExtension> etResponse = Mockito.mock(ETResponse.class);
+    List<ETDataExtension> etDataExtensions = new ArrayList<>();
+    ETDataExtension etDataExtension = new ETDataExtension();
+    etDataExtension.setKey("DE");
+    etDataExtension.setName("DE");
+    etDataExtensions.add(etDataExtension);
+    List<? extends ETApiObject> etApiObjects = etDataExtensions;
+    PowerMockito.when(client.retrieveDataExtensionKeys()).thenReturn(etResponse);
+    Mockito.doReturn(etApiObjects).when(etResponse).getObjects();
   }
 
   @Test
@@ -113,7 +124,6 @@ public class MarketingCloudSourceTest {
     list.add(sObjectInfo);
     MockFailureCollector mockFailureCollector = new MockFailureCollector();
     MockPipelineConfigurer mockPipelineConfigurer = new MockPipelineConfigurer(null, plugins);
-    MarketingCloudClient client = PowerMockito.mock(MarketingCloudClient.class);
     ETClient etClient = PowerMockito.mock(ETClient.class);
     PowerMockito.whenNew(ETClient.class).withArguments(Mockito.anyString()).thenReturn(etClient);
     PowerMockito.whenNew(MarketingCloudClient.class).withArguments(Mockito.any()).thenReturn(client);
@@ -163,7 +173,6 @@ public class MarketingCloudSourceTest {
     columns.add(column);
     MarketingCloudObjectInfo sObjectInfo = Mockito.mock(MarketingCloudObjectInfo.class);
     list.add(sObjectInfo);
-    MarketingCloudClient client = PowerMockito.mock(MarketingCloudClient.class);
     ETClient etClient = PowerMockito.mock(ETClient.class);
     PowerMockito.whenNew(ETClient.class).withArguments(Mockito.anyString()).thenReturn(etClient);
     PowerMockito.whenNew(MarketingCloudClient.class).withArguments(Mockito.any()).thenReturn(client);
@@ -199,7 +208,6 @@ public class MarketingCloudSourceTest {
     list.add(sObjectInfo);
     MockFailureCollector mockFailureCollector = new MockFailureCollector();
     MockPipelineConfigurer mockPipelineConfigurer = new MockPipelineConfigurer(null, plugins);
-    MarketingCloudClient client = PowerMockito.mock(MarketingCloudClient.class);
     ETClient etClient = PowerMockito.mock(ETClient.class);
     PowerMockito.whenNew(ETClient.class).withArguments(Mockito.anyString()).thenReturn(etClient);
     PowerMockito.whenNew(MarketingCloudClient.class).withArguments(Mockito.any()).thenReturn(client);
@@ -226,7 +234,6 @@ public class MarketingCloudSourceTest {
     MarketingCloudObjectInfo marketingCloudObjectInfo = new MarketingCloudObjectInfo(object, tables);
     Collection<MarketingCloudObjectInfo> list = new ArrayList<>();
     list.add(marketingCloudObjectInfo);
-    MarketingCloudClient client = PowerMockito.mock(MarketingCloudClient.class);
     ETClient etClient = PowerMockito.mock(ETClient.class);
     PowerMockito.whenNew(ETClient.class).withArguments(Mockito.anyString()).thenReturn(etClient);
     PowerMockito.whenNew(MarketingCloudClient.class).withArguments(Mockito.any()).thenReturn(client);
